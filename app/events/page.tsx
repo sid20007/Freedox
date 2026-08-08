@@ -57,6 +57,29 @@ export default function EventsList() {
     }
   };
 
+  const [availabilityVenue, setAvailabilityVenue] = useState("");
+  const [availabilityDate, setAvailabilityDate] = useState("");
+  const [availabilityConflict, setAvailabilityConflict] = useState<{title: string} | null>(null);
+
+  const uniqueVenues = Array.from(new Set(events.map(e => e.venue))).filter(Boolean);
+
+  useEffect(() => {
+    if (availabilityVenue && availabilityDate) {
+      fetch(`/api/events/check-conflict?venue=${encodeURIComponent(availabilityVenue)}&date=${encodeURIComponent(availabilityDate)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.hasConflict && data.conflictingEvent) {
+            setAvailabilityConflict(data.conflictingEvent);
+          } else {
+            setAvailabilityConflict(null);
+          }
+        })
+        .catch(console.error);
+    } else {
+      setAvailabilityConflict(null);
+    }
+  }, [availabilityVenue, availabilityDate]);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -73,6 +96,56 @@ export default function EventsList() {
         >
           + Propose Event
         </Link>
+      </div>
+
+      {/* Venue Availability Check */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <h2 className="text-sm font-bold text-slate-800">Venue Availability</h2>
+        <div className="flex flex-col sm:flex-row gap-4 items-end">
+          <div className="w-full sm:w-1/3">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              Select Venue
+            </label>
+            <select
+              value={availabilityVenue}
+              onChange={(e) => setAvailabilityVenue(e.target.value)}
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            >
+              <option value="">-- Pick a Venue --</option>
+              {uniqueVenues.map(v => (
+                <option key={v} value={v}>{v}</option>
+              ))}
+            </select>
+          </div>
+          <div className="w-full sm:w-1/3">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+              Select Date
+            </label>
+            <input
+              type="date"
+              value={availabilityDate}
+              onChange={(e) => setAvailabilityDate(e.target.value)}
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <div className="w-full sm:w-1/3 pb-2">
+            {availabilityVenue && availabilityDate ? (
+              availabilityConflict ? (
+                <div className="text-rose-600 text-sm font-semibold flex items-center">
+                  ⚠️ Booked: {availabilityConflict.title}
+                </div>
+              ) : (
+                <div className="text-emerald-600 text-sm font-semibold flex items-center">
+                  ✓ Available
+                </div>
+              )
+            ) : (
+              <div className="text-slate-400 text-sm italic">
+                Select a venue and date to check
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Controls / Filters */}

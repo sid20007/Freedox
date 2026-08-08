@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+
+interface ConflictingEvent {
+  id: string;
+  title: string;
+  date: string;
+  venue: string;
+  status: string;
+}
 
 export default function ProposeEvent() {
   const router = useRouter();
@@ -15,11 +23,43 @@ export default function ProposeEvent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Conflict warning state
+  const [conflictingEvent, setConflictingEvent] = useState<ConflictingEvent | null>(null);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    if (!formData.venue || !formData.date) {
+      setConflictingEvent(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `/api/events/check-conflict?venue=${encodeURIComponent(
+            formData.venue
+          )}&date=${encodeURIComponent(formData.date)}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data.hasConflict && data.conflictingEvent) {
+            setConflictingEvent(data.conflictingEvent);
+          } else {
+            setConflictingEvent(null);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [formData.venue, formData.date]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -158,6 +198,18 @@ export default function ProposeEvent() {
             />
           </div>
         </div>
+
+        {/* Venue Conflict Warning Box */}
+        {conflictingEvent && (
+          <div className="bg-amber-50 border-2 border-amber-300 text-amber-900 p-4 rounded-2xl text-xs space-y-1">
+            <p className="font-bold text-sm">
+              ⚠️ {formData.venue} is already booked for &quot;{conflictingEvent.title}&quot; on this date.
+            </p>
+            <p className="text-amber-800">
+              You can still submit, but the Dean will need to review this conflict before approval.
+            </p>
+          </div>
+        )}
 
         <div className="pt-4 border-t border-slate-100 flex items-center justify-end">
           <button

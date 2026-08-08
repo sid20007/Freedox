@@ -101,6 +101,7 @@ export default function EventDetailPage() {
   });
 
   const [pressLink, setPressLink] = useState("");
+  const [deanConflict, setDeanConflict] = useState<{ id: string; title: string } | null>(null);
 
   const fetchEvent = async () => {
     try {
@@ -108,6 +109,23 @@ export default function EventDetailPage() {
       if (res.ok) {
         const data = await res.json();
         setEvent(data);
+
+        // Check venue conflict for Dean review
+        if (data.status === "pending_approval") {
+          const conflictRes = await fetch(
+            `/api/events/check-conflict?venue=${encodeURIComponent(
+              data.venue
+            )}&date=${encodeURIComponent(data.date)}&excludeEventId=${data.id}`
+          );
+          if (conflictRes.ok) {
+            const conflictData = await conflictRes.json();
+            if (conflictData.hasConflict && conflictData.conflictingEvent) {
+              setDeanConflict(conflictData.conflictingEvent);
+            } else {
+              setDeanConflict(null);
+            }
+          }
+        }
       }
     } catch (err) {
       console.error(err);
@@ -342,6 +360,16 @@ export default function EventDetailPage() {
       {/* DEAN ROLE ACTION BLOCK: Approve / Reject Pending Event */}
       {role === "Dean" && event.status === "pending_approval" && (
         <div className="bg-amber-50 border-2 border-amber-300 rounded-3xl p-6 shadow-sm space-y-4">
+          {deanConflict && (
+            <div className="bg-rose-50 border-2 border-rose-300 text-rose-900 p-4 rounded-2xl text-xs space-y-1 mb-2">
+              <p className="font-bold text-sm">
+                ⚠️ {event.venue} is already booked for &quot;{deanConflict.title}&quot; on this date.
+              </p>
+              <p className="text-rose-800">
+                Please review this venue conflict before approving the event.
+              </p>
+            </div>
+          )}
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-bold text-amber-900">Dean Review & Approval Action</h2>
             <span className="text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full border border-amber-200">

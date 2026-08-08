@@ -1,3 +1,6 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 /**
  * Utility function to format numbers into Indian Rupee (INR) currency format.
  * Example: 150000 -> ₹1,50,000
@@ -11,4 +14,8 @@ export function formatINR(amount: number | string): string {
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(num);
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
