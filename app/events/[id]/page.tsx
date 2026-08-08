@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useRole } from "@/context/RoleContext";
+import { formatINR } from "@/lib/utils";
 
 interface Approval {
   id: string;
@@ -326,7 +327,7 @@ export default function EventDetailPage() {
           </div>
           <div>
             <span className="text-xs font-semibold text-slate-400 uppercase block">Budget</span>
-            <span className="font-semibold text-slate-800">${event.budget.toLocaleString()}</span>
+            <span className="font-semibold text-slate-800">{formatINR(event.budget)}</span>
           </div>
           <div>
             <span className="text-xs font-semibold text-slate-400 uppercase block">Event ID</span>
@@ -590,7 +591,7 @@ export default function EventDetailPage() {
                   <div><span className="text-xs text-slate-400 block">Type</span>{event.eventType}</div>
                   <div><span className="text-xs text-slate-400 block">Venue</span>{event.venue}</div>
                   <div><span className="text-xs text-slate-400 block">Date</span>{new Date(event.date).toLocaleDateString()}</div>
-                  <div><span className="text-xs text-slate-400 block">Budget</span>${event.budget.toLocaleString()}</div>
+                  <div><span className="text-xs text-slate-400 block">Budget</span>{formatINR(event.budget)}</div>
                 </div>
               </div>
 

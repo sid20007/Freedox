@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { formatINR } from "@/lib/utils";
 
 interface Event {
   id: string;
@@ -151,7 +152,7 @@ export default function EventsList() {
                       {new Date(evt.date).toLocaleDateString()}
                     </td>
                     <td className="py-3.5 px-4 font-medium text-slate-800">
-                      ${evt.budget.toLocaleString()}
+                      {formatINR(evt.budget)}
                     </td>
                     <td className="py-3.5 px-4">
                       <span

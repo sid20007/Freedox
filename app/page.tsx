@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRole } from "@/context/RoleContext";
+import { formatINR } from "@/lib/utils";
 
 interface Event {
   id: string;
@@ -142,7 +143,7 @@ export default function Dashboard() {
                       📍 {evt.venue} | 📅 {new Date(evt.date).toLocaleDateString()}
                     </p>
                     <p className="text-sm font-semibold text-slate-700 mt-2">
-                      Budget: ₹{evt.budget.toLocaleString()}
+                      Budget: {formatINR(evt.budget)}
                     </p>
                   </div>
                   <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -246,7 +247,7 @@ export default function Dashboard() {
                       {evt.title}
                     </p>
                     <p className="text-xs text-slate-500 mt-1">
-                      ₹{evt.budget.toLocaleString()} • {evt.venue}
+                      {formatINR(evt.budget)} • {evt.venue}
                     </p>
                   </Link>
                 ))
@@ -276,7 +277,7 @@ export default function Dashboard() {
                       {evt.title}
                     </p>
                     <p className="text-xs text-slate-500 mt-1">
-                      ₹{evt.budget.toLocaleString()} • {evt.venue}
+                      {formatINR(evt.budget)} • {evt.venue}
                     </p>
                   </Link>
                 ))
@@ -311,7 +312,7 @@ export default function Dashboard() {
                       </span>
                     </div>
                     <p className="text-xs text-slate-500 mt-1">
-                      ₹{evt.budget.toLocaleString()} • {evt.venue}
+                      {formatINR(evt.budget)} • {evt.venue}
                     </p>
                   </Link>
                 ))
@@ -347,7 +348,7 @@ export default function Dashboard() {
                         </span>
                       </div>
                       <p className="text-xs text-slate-500 mt-1">
-                        ₹{evt.budget.toLocaleString()} • {evt.venue}
+                        {formatINR(evt.budget)} • {evt.venue}
                       </p>
                     </Link>
                   ))}
@@ -366,7 +367,7 @@ export default function Dashboard() {
                         </span>
                       </div>
                       <p className="text-xs text-slate-500 mt-1">
-                        ₹{evt.budget.toLocaleString()} • {evt.venue}
+                        {formatINR(evt.budget)} • {evt.venue}
                       </p>
                     </Link>
                   ))}

@@ -116,7 +116,7 @@ export default function ProposeEvent() {
 
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-              Estimated Budget ($) *
+              Estimated Budget (₹) *
             </label>
             <input
               type="number"
