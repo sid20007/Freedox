@@ -140,7 +140,7 @@ As St Aloysius (Deemed to be University) expands its digital infrastructure, the
    npx prisma db seed
    ```
 
-4. **Run Development Server:**
+4. **Run Development Server:***
    ```bash
    npm run dev
    ```
