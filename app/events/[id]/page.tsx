@@ -63,7 +63,7 @@ interface EventDetail {
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { role } = useRole();
+  const { userName, role } = useRole();
 
   const [event, setEvent] = useState<EventDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -150,11 +150,14 @@ export default function EventDetailPage() {
     try {
       const res = await fetch(`/api/events/${params.id}/approval`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-role": "Dean",
+        },
         body: JSON.stringify({
           action,
-          approverName: "Prof. Michael Vance",
-          role: "Dean of Student Affairs",
+          approverName: userName || "Dean, SOE",
+          role: "Dean",
           comment: approvalComment,
         }),
       });
@@ -339,7 +342,12 @@ export default function EventDetailPage() {
       {/* DEAN ROLE ACTION BLOCK: Approve / Reject Pending Event */}
       {role === "Dean" && event.status === "pending_approval" && (
         <div className="bg-amber-50 border-2 border-amber-300 rounded-3xl p-6 shadow-sm space-y-4">
-          <h2 className="text-lg font-bold text-amber-900">Dean Review & Approval Action</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-bold text-amber-900">Dean Review & Approval Action</h2>
+            <span className="text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full border border-amber-200">
+              Approving as: {userName || "Dean, SOE"}
+            </span>
+          </div>
           <p className="text-sm text-amber-800">
             Review this event proposal and either approve or reject it with remarks.
           </p>
