@@ -1,4 +1,4 @@
-import "./globals.css";
+  import "./globals.css";
 import { RoleProvider } from "@/context/RoleContext";
 import Navbar from "@/components/Navbar";
 import IdentityGuard from "@/components/IdentityGuard";
