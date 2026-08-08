@@ -1,6 +1,6 @@
-# Event Proposal to Post-Event Reporting Portal
+# Event Management Portal — St Aloysius (Deemed to be University)
 
-An end-to-end event management system for university campus events, covering proposal submission, multi-stage approval workflows, event execution tracking, and post-event documentation.
+Event Management Portal for **St Aloysius (Deemed to be University) — School of Engineering, Mangaluru** — supporting the newly launched School's event lifecycle from proposal to accreditation-ready documentation.
 
 ## Tech Stack
 - **Framework:** Next.js 14 (App Router)
@@ -9,7 +9,8 @@ An end-to-end event management system for university campus events, covering pro
 - **Styling:** Tailwind CSS
 
 ## Key Features
-- **Proposal Submission:** Student organizations can submit detailed event proposals with budgets and schedules.
-- **Approval Workflow:** University administrators and department heads review, approve, or request revisions on proposals.
-- **Event Execution & Attendance:** Track active events and attendance logs during execution.
-- **Post-Event Reporting:** Upload event summaries, budget reconciliations, and geo-tagged photos for post-event documentation.
+- **Proposal Submission:** Faculty advisors and student societies submit detailed event proposals with budgets and venue requirements.
+- **Multi-Stage Approval Workflow:** Dean of SOE and Faculty Advisors review, approve, or request revisions on proposals with full audit trails.
+- **Automated Student Feedback System:** Public feedback links generate live star ratings and responses without requiring student logins.
+- **Post-Event Reporting & Verification:** Upload event summaries, participant counts, geo-tagged photos (with Mangaluru lat/long verification), and press clippings.
+- **Accreditation-Ready Event Dossier:** Auto-compile proposals, approvals, reports, photo evidence, and student feedback into a single consolidated dossier view.

@@ -3,9 +3,9 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Seeding database...");
+  console.log("Seeding St Aloysius (Deemed to be University), School of Engineering (Mangaluru) events...");
 
-  // Clean existing data
+  // Clean existing records
   await prisma.feedbackResponse.deleteMany();
   await prisma.feedbackQuestion.deleteMany();
   await prisma.pressClipping.deleteMany();
@@ -47,10 +47,10 @@ async function main() {
   // 1. Draft Event
   const draftEvent = await prisma.event.create({
     data: {
-      title: "Cybersecurity & Ethical Hacking Bootcamp",
-      date: new Date("2026-09-15T10:00:00Z"),
-      venue: "Lab 3, CS Department",
-      budget: 500.0,
+      title: "Coding Bootcamp for First Years",
+      date: new Date("2026-09-10T09:30:00Z"),
+      venue: "Lab 201, SOE Block, St Aloysius Campus, Mangaluru",
+      budget: 8000.0,
       eventType: "Workshop",
       status: "draft",
     },
@@ -60,17 +60,17 @@ async function main() {
   const pendingEvent = await prisma.event.create({
     data: {
       title: "Guest Lecture on Robotics & Autonomous Systems",
-      date: new Date("2026-09-20T14:00:00Z"),
-      venue: "Auditorium B",
-      budget: 1200.0,
+      date: new Date("2026-09-18T14:00:00Z"),
+      venue: "AILC Seminar Hall, School of Engineering, Mangaluru",
+      budget: 15000.0,
       eventType: "Lecture",
       status: "pending_approval",
       approvals: {
         create: [
           {
-            approverName: "Dr. Sarah Jenkins",
+            approverName: "Dr. Rio D'Souza",
             role: "Faculty Advisor",
-            comment: "Recommended for departmental approval. Good topic.",
+            comment: "Recommended for departmental approval. High industry relevance.",
             timestamp: new Date("2026-08-01T09:30:00Z"),
           },
         ],
@@ -81,24 +81,24 @@ async function main() {
   // 3. Approved Event
   const approvedEvent = await prisma.event.create({
     data: {
-      title: "Inter-College Hackathon 2026",
-      date: new Date("2026-10-05T09:00:00Z"),
-      venue: "Main Campus Student Center",
-      budget: 5000.0,
+      title: "Internal Smart India Hackathon 2026",
+      date: new Date("2026-10-02T08:00:00Z"),
+      venue: "Main Auditorium, St Aloysius Campus, Mangaluru",
+      budget: 45000.0,
       eventType: "Hackathon",
       status: "approved",
       approvals: {
         create: [
           {
-            approverName: "Dr. Sarah Jenkins",
+            approverName: "Dr. Rio D'Souza",
             role: "Faculty Advisor",
-            comment: "Strong proposal, budget and venue arrangement look realistic.",
+            comment: "Strong proposal and problem statements evaluated.",
             timestamp: new Date("2026-07-25T11:00:00Z"),
           },
           {
-            approverName: "Prof. Michael Vance",
-            role: "Dean of Student Affairs",
-            comment: "Approved. Ensure all overnight safety protocols are enforced.",
+            approverName: "Dr. Praveen J.",
+            role: "Dean, School of Engineering",
+            comment: "Approved. Ensure high-speed connectivity and lab access.",
             timestamp: new Date("2026-07-27T16:15:00Z"),
           },
         ],
@@ -106,26 +106,26 @@ async function main() {
     },
   });
 
-  // 4. Completed Event 1 (AI Workshop)
+  // 4. Completed Event 1 (AI & Machine Learning Workshop)
   const completedEvent1 = await prisma.event.create({
     data: {
-      title: "AI & Deep Learning Hands-on Workshop",
-      date: new Date("2026-05-12T10:00:00Z"),
-      venue: "Engineering Hall Auditorium",
-      budget: 2500.0,
+      title: "AI & Machine Learning Workshop",
+      date: new Date("2026-05-15T09:30:00Z"),
+      venue: "Computer Center, School of Engineering, Mangaluru",
+      budget: 25000.0,
       eventType: "Workshop",
       status: "completed",
       approvals: {
         create: [
           {
-            approverName: "Dr. Sarah Jenkins",
+            approverName: "Dr. Rio D'Souza",
             role: "Faculty Advisor",
-            comment: "Approved.",
+            comment: "Approved for execution.",
             timestamp: new Date("2026-04-10T10:00:00Z"),
           },
           {
-            approverName: "Prof. Michael Vance",
-            role: "Dean of Student Affairs",
+            approverName: "Dr. Praveen J.",
+            role: "Dean, School of Engineering",
             comment: "Approved.",
             timestamp: new Date("2026-04-12T14:00:00Z"),
           },
@@ -135,10 +135,10 @@ async function main() {
         create: [
           {
             description:
-              "An intensive full-day practical workshop covering PyTorch, transformer architectures, and LLM fine-tuning techniques.",
+              "A comprehensive 2-day hands-on workshop covering PyTorch, Scikit-Learn, and Neural Network architectures tailored for SOE engineering students.",
             outcomes:
-              "Over 150 students built and deployed working sentiment classification models. 95% completion rate for hands-on lab sessions.",
-            participantCount: 150,
+              "180 engineering students built and evaluated machine learning models. 96% completed practical assignments successfully.",
+            participantCount: 180,
           },
         ],
       },
@@ -153,14 +153,14 @@ async function main() {
           {
             url: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655",
             type: "geo_tagged",
-            latitude: 37.7749,
-            longitude: -122.4194,
+            latitude: 12.8715,
+            longitude: 74.8431,
           },
           {
             url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4",
             type: "geo_tagged",
-            latitude: 37.7751,
-            longitude: -122.4189,
+            latitude: 12.8718,
+            longitude: 74.8435,
           },
         ],
       },
@@ -168,7 +168,7 @@ async function main() {
         create: [
           {
             summary:
-              "Participants rated the event 4.8 out of 5 stars. High interest expressed for advanced follow-up modules on computer vision.",
+              "Overwhelmingly positive response from SOE students. Average rating 4.9/5 stars with strong interest in advanced NLP sessions.",
           },
         ],
       },
@@ -176,7 +176,7 @@ async function main() {
         create: [
           {
             linkOrReference:
-              "Campus Tech Chronicle - 'AI Workshop Equips Engineering Students with Cutting-Edge Skills'",
+              "Deccan Herald - 'St Aloysius SOE Hosts National Workshop on Artificial Intelligence'",
           },
         ],
       },
@@ -189,66 +189,59 @@ async function main() {
       {
         eventId: completedEvent1.id,
         questionId: q1.id,
-        studentName: "Alex Rivera",
+        studentName: "Rohan D'Souza",
         answer: "5",
         ratingValue: 5,
       },
       {
         eventId: completedEvent1.id,
         questionId: q2.id,
-        studentName: "Alex Rivera",
-        answer: "Hands-on PyTorch coding examples and GPU access.",
+        studentName: "Rohan D'Souza",
+        answer: "Hands-on PyTorch coding and model deployment guidance.",
       },
       {
         eventId: completedEvent1.id,
         questionId: q3.id,
-        studentName: "Alex Rivera",
-        answer: "More time for Q&A at the end.",
+        studentName: "Rohan D'Souza",
+        answer: "Provide pre-installed GPU lab environments.",
       },
       {
         eventId: completedEvent1.id,
         questionId: q1.id,
-        studentName: "Sophia Chen",
-        answer: "4.5",
-        ratingValue: 4.5,
+        studentName: "Ananya Rao",
+        answer: "4.8",
+        ratingValue: 4.8,
       },
       {
         eventId: completedEvent1.id,
         questionId: q2.id,
-        studentName: "Sophia Chen",
-        answer: "Clear step-by-step guidance by instructors.",
-      },
-      {
-        eventId: completedEvent1.id,
-        questionId: q1.id,
-        studentName: "Anonymous Student",
-        answer: "5",
-        ratingValue: 5,
+        studentName: "Ananya Rao",
+        answer: "Excellent faculty interaction and practical assignments.",
       },
     ],
   });
 
-  // 5. Completed Event 2 (Cultural Fest)
+  // 5. Completed Event 2 (Resonance Technical Fest)
   const completedEvent2 = await prisma.event.create({
     data: {
-      title: "Annual Campus Cultural Fest 2026",
-      date: new Date("2026-06-01T16:00:00Z"),
-      venue: "University Open Air Theatre",
-      budget: 8500.0,
+      title: "Resonance Technical Fest",
+      date: new Date("2026-06-05T09:00:00Z"),
+      venue: "Open Air Quadrangle, St Aloysius Campus, Mangaluru",
+      budget: 120000.0,
       eventType: "Cultural Fest",
       status: "completed",
       approvals: {
         create: [
           {
-            approverName: "Dr. Sarah Jenkins",
+            approverName: "Dr. Rio D'Souza",
             role: "Faculty Advisor",
-            comment: "Budget and event lineup approved.",
+            comment: "Fest schedule and budget allocation approved.",
             timestamp: new Date("2026-05-01T11:00:00Z"),
           },
           {
-            approverName: "Prof. Michael Vance",
-            role: "Dean of Student Affairs",
-            comment: "Approved for evening slot.",
+            approverName: "Dr. Praveen J.",
+            role: "Dean, School of Engineering",
+            comment: "Approved for multi-college participation.",
             timestamp: new Date("2026-05-03T15:00:00Z"),
           },
         ],
@@ -257,10 +250,10 @@ async function main() {
         create: [
           {
             description:
-              "Annual flagship campus festival showcasing live music performances, inter-departmental dance battles, theatrical plays, and food pop-ups.",
+              "Annual flagship technical festival of St Aloysius School of Engineering featuring robo-wars, paper presentations, coding marathons, and drone racing.",
             outcomes:
-              "Welcomed participants and attendees from 12 neighboring colleges. High campus engagement and zero security incidents.",
-            participantCount: 650,
+              "Over 750 participants from 15 regional engineering institutions across Karnataka. High media coverage and industry sponsorship.",
+            participantCount: 750,
           },
         ],
       },
@@ -269,8 +262,8 @@ async function main() {
           {
             url: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30",
             type: "geo_tagged",
-            latitude: 34.0522,
-            longitude: -118.2437,
+            latitude: 12.8722,
+            longitude: 74.8428,
           },
           {
             url: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
@@ -281,8 +274,8 @@ async function main() {
           {
             url: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745",
             type: "geo_tagged",
-            latitude: 34.0525,
-            longitude: -118.244,
+            latitude: 12.8725,
+            longitude: 74.843,
           },
         ],
       },
@@ -290,7 +283,7 @@ async function main() {
         create: [
           {
             summary:
-              "Extremely positive feedback from students, faculty guests, and external participants. High praise for stage sound and logistics.",
+              "Highly praised by visiting dignitaries and students. Rated 5/5 stars for event organization and robotics arena setup.",
           },
         ],
       },
@@ -298,7 +291,7 @@ async function main() {
         create: [
           {
             linkOrReference:
-              "https://universitynews.edu/culture/fest-2026-highlights",
+              "The Hindu - 'Resonance 2026 Inaugurated at St Aloysius School of Engineering, Mangaluru'",
           },
         ],
       },
@@ -311,27 +304,27 @@ async function main() {
       {
         eventId: completedEvent2.id,
         questionId: q1.id,
-        studentName: "David Miller",
+        studentName: "Karthik Shetty",
         answer: "5",
         ratingValue: 5,
       },
       {
         eventId: completedEvent2.id,
         questionId: q2.id,
-        studentName: "David Miller",
-        answer: "The live band stage lighting and sound setup.",
+        studentName: "Karthik Shetty",
+        answer: "Robo-wars arena and drone competition track.",
       },
       {
         eventId: completedEvent2.id,
         questionId: q1.id,
-        studentName: "Emma Watson",
-        answer: "4.8",
-        ratingValue: 4.8,
+        studentName: "Nisha Fernandes",
+        answer: "5",
+        ratingValue: 5,
       },
     ],
   });
 
-  console.log("Seeding completed successfully with Feedback Questions & Responses!");
+  console.log("Seeded St Aloysius SOE events successfully!");
 }
 
 main()
