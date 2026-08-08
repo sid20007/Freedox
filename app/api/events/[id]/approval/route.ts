@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { sanitizeString } from "@/lib/security";
 
 export async function POST(
   request: Request,
@@ -15,14 +16,23 @@ export async function POST(
       );
     }
 
+    // Role check: Only Dean (or authorized admin) can approve/reject
+    const userRole = role || request.headers.get("x-user-role");
+    if (userRole && userRole !== "Dean") {
+      return NextResponse.json(
+        { error: "Unauthorized: Only the Dean can approve or reject event proposals." },
+        { status: 403 }
+      );
+    }
+
     const newStatus = action === "approve" ? "approved" : "rejected";
 
     const approval = await prisma.approval.create({
       data: {
         eventId: params.id,
-        approverName: approverName || "Dean of Student Affairs",
-        role: role || "Dean",
-        comment: comment || null,
+        approverName: sanitizeString(approverName, 100) || "Dean of Student Affairs",
+        role: "Dean",
+        comment: comment ? sanitizeString(comment, 1000) : null,
       },
     });
 

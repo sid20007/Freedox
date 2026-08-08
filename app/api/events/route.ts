@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { sanitizeString } from "@/lib/security";
 
 export async function GET() {
   try {
@@ -28,11 +29,31 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, date, venue, budget, eventType, status } = body;
+    let { title, date, venue, budget, eventType, status } = body;
+
+    title = sanitizeString(title, 200);
+    venue = sanitizeString(venue, 200);
+    eventType = sanitizeString(eventType, 100);
 
     if (!title || !date || !venue || !eventType) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Missing required fields or invalid text length" },
+        { status: 400 }
+      );
+    }
+
+    const parsedBudget = parseFloat(budget);
+    if (isNaN(parsedBudget) || parsedBudget < 0 || parsedBudget > 100000000) {
+      return NextResponse.json(
+        { error: "Invalid budget amount" },
+        { status: 400 }
+      );
+    }
+
+    const eventDate = new Date(date);
+    if (isNaN(eventDate.getTime())) {
+      return NextResponse.json(
+        { error: "Invalid date format" },
         { status: 400 }
       );
     }
@@ -40,9 +61,9 @@ export async function POST(request: Request) {
     const newEvent = await prisma.event.create({
       data: {
         title,
-        date: new Date(date),
+        date: eventDate,
         venue,
-        budget: parseFloat(budget) || 0,
+        budget: parsedBudget,
         eventType,
         status: status === "pending_approval" ? "pending_approval" : "draft",
       },

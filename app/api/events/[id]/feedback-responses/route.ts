@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { sanitizeString } from "@/lib/security";
 
 export async function GET(
   request: Request,
@@ -45,12 +46,21 @@ export async function POST(
 ) {
   try {
     const body = await request.json();
-    // body can be an array of { questionId, answer, studentName }
-    const { studentName, responses } = body;
+    let { studentName, responses } = body;
+
+    studentName = sanitizeString(studentName, 100) || "Anonymous Student";
 
     if (!Array.isArray(responses) || responses.length === 0) {
       return NextResponse.json(
-        { error: "No responses submitted" },
+        { error: "No valid responses submitted" },
+        { status: 400 }
+      );
+    }
+
+    // Rate limiting / spam guard: cap max responses per request to 10
+    if (responses.length > 10) {
+      return NextResponse.json(
+        { error: "Too many response items in submission" },
         { status: 400 }
       );
     }
@@ -61,6 +71,7 @@ export async function POST(
       const { questionId, answer } = r;
       if (!questionId || answer === undefined) continue;
 
+      const sanitizedAnswer = sanitizeString(String(answer), 1000);
       const numVal = parseFloat(answer);
       const isRating = !isNaN(numVal) && numVal >= 1 && numVal <= 5;
 
@@ -68,8 +79,8 @@ export async function POST(
         data: {
           eventId: params.id,
           questionId,
-          studentName: studentName || "Anonymous Student",
-          answer: String(answer),
+          studentName,
+          answer: sanitizedAnswer,
           ratingValue: isRating ? numVal : null,
         },
       });

@@ -26,9 +26,16 @@ export default function PublicFeedbackPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    // Check localStorage flag to prevent duplicate submissions in same browser session
+    const submissionKey = `freedox_submitted_feedback_${params.id}`;
+    if (localStorage.getItem(submissionKey)) {
+      setAlreadySubmitted(true);
+    }
+
     async function loadData() {
       try {
         const [eventRes, qRes] = await Promise.all([
@@ -91,6 +98,8 @@ export default function PublicFeedbackPage() {
         throw new Error("Failed to submit feedback.");
       }
 
+      // Mark local session as submitted
+      localStorage.setItem(`freedox_submitted_feedback_${params.id}`, "true");
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message || "An error occurred while submitting feedback.");
@@ -107,15 +116,19 @@ export default function PublicFeedbackPage() {
     );
   }
 
-  if (submitted) {
+  if (submitted || alreadySubmitted) {
     return (
       <div className="max-w-xl mx-auto my-12 bg-white border border-emerald-200 rounded-3xl p-8 shadow-sm text-center space-y-4">
         <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl font-bold">
           ✓
         </div>
-        <h1 className="text-2xl font-extrabold text-slate-900">Thank You for Your Feedback!</h1>
+        <h1 className="text-2xl font-extrabold text-slate-900">
+          {alreadySubmitted ? "Feedback Already Submitted" : "Thank You for Your Feedback!"}
+        </h1>
         <p className="text-sm text-slate-600">
-          Your feedback for <strong className="text-slate-900">{event?.title}</strong> has been successfully recorded and will help improve future campus events.
+          {alreadySubmitted
+            ? `You have already submitted feedback for ${event?.title || "this event"} from this browser.`
+            : `Your feedback for ${event?.title || "this event"} has been recorded.`}
         </p>
       </div>
     );

@@ -1,12 +1,21 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { sanitizeString } from "@/lib/security";
 
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { linkOrReference } = await request.json();
+    let { linkOrReference } = await request.json();
+    linkOrReference = sanitizeString(linkOrReference, 1000);
+
+    if (!linkOrReference) {
+      return NextResponse.json(
+        { error: "Press clipping link or reference is required" },
+        { status: 400 }
+      );
+    }
 
     const press = await prisma.pressClipping.create({
       data: {
