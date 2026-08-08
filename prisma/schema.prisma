@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id             String          @id @default(uuid())
+  title          String
+  date           DateTime
+  venue          String
+  budget         Float
+  eventType      String
+  status         String          @default("draft")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  approvals      Approval[]
+  reports        Report[]
+  photos         Photo[]
+  feedbacks      Feedback[]
+  pressClippings PressClipping[]
+}
+
+model Approval {
+  id           String   @id @default(uuid())
+  eventId      String
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  approverName String
+  role         String
+  comment      String?
+  timestamp    DateTime @default(now())
+}
+
+model Report {
+  id               String   @id @default(uuid())
+  eventId          String
+  event            Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  description      String
+  outcomes         String
+  participantCount Int
+  createdAt        DateTime @default(now())
+}
+
+model Photo {
+  id        String   @id @default(uuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  url       String
+  type      String
+  latitude  Float?
+  longitude Float?
+  createdAt DateTime @default(now())
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  summary   String
+  createdAt DateTime @default(now())
+}
+
+model PressClipping {
+  id              String   @id @default(uuid())
+  eventId         String
+  event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  linkOrReference String
+  createdAt       DateTime @default(now())
+}
