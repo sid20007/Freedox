@@ -6,12 +6,43 @@ async function main() {
   console.log("Seeding database...");
 
   // Clean existing data
+  await prisma.feedbackResponse.deleteMany();
+  await prisma.feedbackQuestion.deleteMany();
   await prisma.pressClipping.deleteMany();
   await prisma.feedback.deleteMany();
   await prisma.photo.deleteMany();
   await prisma.report.deleteMany();
   await prisma.approval.deleteMany();
   await prisma.event.deleteMany();
+
+  // Seed fixed Feedback Questions template
+  const q1 = await prisma.feedbackQuestion.create({
+    data: {
+      questionText: "Overall, how would you rate this event (1 to 5 stars)?",
+      questionType: "rating",
+    },
+  });
+
+  const q2 = await prisma.feedbackQuestion.create({
+    data: {
+      questionText: "What did you like most about this event?",
+      questionType: "text",
+    },
+  });
+
+  const q3 = await prisma.feedbackQuestion.create({
+    data: {
+      questionText: "What suggestions do you have for future improvements?",
+      questionType: "text",
+    },
+  });
+
+  const q4 = await prisma.feedbackQuestion.create({
+    data: {
+      questionText: "Would you recommend similar events to fellow students?",
+      questionType: "text",
+    },
+  });
 
   // 1. Draft Event
   const draftEvent = await prisma.event.create({
@@ -104,7 +135,7 @@ async function main() {
         create: [
           {
             description:
-              "A intensive full-day practical workshop covering PyTorch, transformer architectures, and LLM fine-tuning techniques.",
+              "An intensive full-day practical workshop covering PyTorch, transformer architectures, and LLM fine-tuning techniques.",
             outcomes:
               "Over 150 students built and deployed working sentiment classification models. 95% completion rate for hands-on lab sessions.",
             participantCount: 150,
@@ -137,7 +168,7 @@ async function main() {
         create: [
           {
             summary:
-              "Participants rated the event 4.8 out of 5 stars. Strong demand expressed for advanced follow-up modules on computer vision.",
+              "Participants rated the event 4.8 out of 5 stars. High interest expressed for advanced follow-up modules on computer vision.",
           },
         ],
       },
@@ -150,6 +181,51 @@ async function main() {
         ],
       },
     },
+  });
+
+  // Seed Feedback Responses for Completed Event 1
+  await prisma.feedbackResponse.createMany({
+    data: [
+      {
+        eventId: completedEvent1.id,
+        questionId: q1.id,
+        studentName: "Alex Rivera",
+        answer: "5",
+        ratingValue: 5,
+      },
+      {
+        eventId: completedEvent1.id,
+        questionId: q2.id,
+        studentName: "Alex Rivera",
+        answer: "Hands-on PyTorch coding examples and GPU access.",
+      },
+      {
+        eventId: completedEvent1.id,
+        questionId: q3.id,
+        studentName: "Alex Rivera",
+        answer: "More time for Q&A at the end.",
+      },
+      {
+        eventId: completedEvent1.id,
+        questionId: q1.id,
+        studentName: "Sophia Chen",
+        answer: "4.5",
+        ratingValue: 4.5,
+      },
+      {
+        eventId: completedEvent1.id,
+        questionId: q2.id,
+        studentName: "Sophia Chen",
+        answer: "Clear step-by-step guidance by instructors.",
+      },
+      {
+        eventId: completedEvent1.id,
+        questionId: q1.id,
+        studentName: "Anonymous Student",
+        answer: "5",
+        ratingValue: 5,
+      },
+    ],
   });
 
   // 5. Completed Event 2 (Cultural Fest)
@@ -229,12 +305,33 @@ async function main() {
     },
   });
 
-  console.log("Seeded events successfully:");
-  console.log(` - Draft: ${draftEvent.title}`);
-  console.log(` - Pending: ${pendingEvent.title}`);
-  console.log(` - Approved: ${approvedEvent.title}`);
-  console.log(` - Completed 1: ${completedEvent1.title}`);
-  console.log(` - Completed 2: ${completedEvent2.title}`);
+  // Seed Feedback Responses for Completed Event 2
+  await prisma.feedbackResponse.createMany({
+    data: [
+      {
+        eventId: completedEvent2.id,
+        questionId: q1.id,
+        studentName: "David Miller",
+        answer: "5",
+        ratingValue: 5,
+      },
+      {
+        eventId: completedEvent2.id,
+        questionId: q2.id,
+        studentName: "David Miller",
+        answer: "The live band stage lighting and sound setup.",
+      },
+      {
+        eventId: completedEvent2.id,
+        questionId: q1.id,
+        studentName: "Emma Watson",
+        answer: "4.8",
+        ratingValue: 4.8,
+      },
+    ],
+  });
+
+  console.log("Seeding completed successfully with Feedback Questions & Responses!");
 }
 
 main()

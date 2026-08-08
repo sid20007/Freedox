@@ -8,21 +8,22 @@ datasource db {
 }
 
 model Event {
-  id             String          @id @default(uuid())
-  title          String
-  date           DateTime
-  venue          String
-  budget         Float
-  eventType      String
-  status         String          @default("draft")
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id                String             @id @default(uuid())
+  title             String
+  date              DateTime
+  venue             String
+  budget            Float
+  eventType         String
+  status            String             @default("draft")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
-  approvals      Approval[]
-  reports        Report[]
-  photos         Photo[]
-  feedbacks      Feedback[]
-  pressClippings PressClipping[]
+  approvals         Approval[]
+  reports           Report[]
+  photos            Photo[]
+  feedbacks         Feedback[]
+  pressClippings    PressClipping[]
+  feedbackResponses FeedbackResponse[]
 }
 
 model Approval {
@@ -70,4 +71,24 @@ model PressClipping {
   event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   linkOrReference String
   createdAt       DateTime @default(now())
+}
+
+model FeedbackQuestion {
+  id           String             @id @default(uuid())
+  questionText String
+  questionType String             @default("text")
+  createdAt    DateTime           @default(now())
+  responses    FeedbackResponse[]
+}
+
+model FeedbackResponse {
+  id          String           @id @default(uuid())
+  eventId     String
+  event       Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  questionId  String
+  question    FeedbackQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  studentName String?
+  answer      String
+  ratingValue Float?
+  createdAt   DateTime         @default(now())
 }

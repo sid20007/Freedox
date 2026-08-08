@@ -21,7 +21,8 @@ export default function ProposeEvent() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (submitStatus: "draft" | "pending_approval") => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError("");
     if (!formData.title || !formData.date || !formData.venue || !formData.budget) {
       setError("Please fill out all required fields.");
@@ -36,13 +37,13 @@ export default function ProposeEvent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
-          status: submitStatus,
+          status: "pending_approval",
         }),
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Failed to create event");
+        throw new Error(data.error || "Failed to create event proposal");
       }
 
       const createdEvent = await res.json();
@@ -61,7 +62,7 @@ export default function ProposeEvent() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Propose New Event</h1>
           <p className="text-sm text-slate-500">
-            Fill out the event details to create a proposal draft or submit for approval.
+            Faculty proposal submission. New proposals are submitted directly for Dean approval.
           </p>
         </div>
         <button
@@ -78,7 +79,7 @@ export default function ProposeEvent() {
         </div>
       )}
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5">
+      <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
         <div>
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
             Event Title *
@@ -89,7 +90,7 @@ export default function ProposeEvent() {
             value={formData.title}
             onChange={handleChange}
             placeholder="e.g. AI & Deep Learning Workshop"
-            className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+            className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
           />
         </div>
 
@@ -102,7 +103,7 @@ export default function ProposeEvent() {
               name="eventType"
               value={formData.eventType}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white"
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white"
             >
               <option value="Workshop">Workshop</option>
               <option value="Lecture">Guest Lecture</option>
@@ -124,7 +125,7 @@ export default function ProposeEvent() {
               onChange={handleChange}
               placeholder="e.g. 2500"
               step="0.01"
-              className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
             />
           </div>
         </div>
@@ -139,7 +140,7 @@ export default function ProposeEvent() {
               name="date"
               value={formData.date}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
             />
           </div>
 
@@ -153,30 +154,21 @@ export default function ProposeEvent() {
               value={formData.venue}
               onChange={handleChange}
               placeholder="e.g. Engineering Hall Auditorium"
-              className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
             />
           </div>
         </div>
 
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-end space-x-3">
+        <div className="pt-4 border-t border-slate-100 flex items-center justify-end">
           <button
-            type="button"
+            type="submit"
             disabled={loading}
-            onClick={() => handleSubmit("draft")}
-            className="px-4 py-2 border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold rounded-xl text-sm transition-colors"
+            className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all shadow-md transform hover:-translate-y-0.5"
           >
-            Save as Draft
-          </button>
-          <button
-            type="button"
-            disabled={loading}
-            onClick={() => handleSubmit("pending_approval")}
-            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm"
-          >
-            {loading ? "Submitting..." : "Submit for Approval"}
+            {loading ? "Submitting Proposal..." : "Submit Event Proposal"}
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
